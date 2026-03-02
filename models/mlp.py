@@ -29,6 +29,9 @@ class Multi_Layer_Perceptron(nn.Module):
         
         self.layer_activation=getActivation(activation_per_layer)
         self.output_activation=getActivation(activation_output)
+
+        self.total_params = sum(p.numel() for p in self.parameters())
+        self.trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
         
 
     def forward(self, x):
