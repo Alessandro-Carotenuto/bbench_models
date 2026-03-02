@@ -1,5 +1,6 @@
 import torch.nn as nn
 from typing import List
+from utils.model_utils import getActivation
 
 class Multi_Layer_Perceptron(nn.Module):
 
@@ -26,8 +27,8 @@ class Multi_Layer_Perceptron(nn.Module):
         self.MLPlayers.append(layer)
         self.num_layers=len(self.MLPlayers)
         
-        self.layer_activation=self.getActivation(activation_per_layer)
-        self.output_activation=self.getActivation(activation_output)
+        self.layer_activation=getActivation(activation_per_layer)
+        self.output_activation=getActivation(activation_output)
         
 
     def forward(self, x):
@@ -39,29 +40,3 @@ class Multi_Layer_Perceptron(nn.Module):
                 x=self.output_activation(x)
         return x
 
-    @staticmethod
-    def getActivation(f_identifier : str):
-        f_identifier=f_identifier.lower()
-
-        activations = {
-                'relu': nn.ReLU,
-                'leaky_relu': nn.LeakyReLU,
-                'prelu': nn.PReLU,
-                'gelu': nn.GELU,
-                'elu': nn.ELU,
-                'sigmoid': nn.Sigmoid,
-                'tanh': nn.Tanh,
-                'none': nn.Identity
-            }
-        
-        if f_identifier not in activations:
-            raise ValueError(f"Activation '{f_identifier}' is not supported.")
-    
-        activation_class = activations[f_identifier]
-
-        if f_identifier in ['softmax', 'log_softmax']:
-            if f_identifier == 'softmax': 
-                return nn.Softmax(dim=1)
-            return nn.LogSoftmax(dim=1)
-        
-        return activation_class()
